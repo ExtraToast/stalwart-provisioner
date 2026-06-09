@@ -59,6 +59,16 @@ jobs:
       - name: Lint shell scripts
         run: shellcheck scripts/*.sh
 
+  workflow-lint:
+    name: Workflow Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint GitHub Actions workflows
+        uses: rhysd/actionlint@v1
+        with:
+          args: .github/workflows/*.yml
+
   docker-build:
     name: Docker Build
     runs-on: ubuntu-latest
@@ -70,7 +80,7 @@ jobs:
   pipeline-complete:
     name: Pipeline Complete
     if: always()
-    needs: [validate, lint, docker-build]
+    needs: [validate, lint, workflow-lint, docker-build]
     runs-on: ubuntu-latest
     steps:
       - name: Verify all gating jobs succeeded
